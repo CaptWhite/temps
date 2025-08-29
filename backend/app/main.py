@@ -8,4 +8,4 @@ class Message(BaseModel):
 
 @app.get("/hello", response_model=Message)
 async def read_root():
-    return {"message": "Hello World!"}
+    return {"message": "Hello Temps!"}
