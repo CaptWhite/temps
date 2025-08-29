@@ -1,0 +1,15 @@
+
+services:
+  fastapi-backend:
+    container_name: "deploy-backend"
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+
+  vite-react-tw-frontend:
+    container_name: "deploy-frontend"
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080

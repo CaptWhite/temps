@@ -1,0 +1,147 @@
+name: CI/CD Pipeline
+
+# Dispara en push a main o manualmente desde la UI
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  # 1. Tests
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x]
+        python-version: ['3.10']
+    steps:
+      - uses: actions/checkout@v3
+
+      # Cache pip
+      - uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('backend/requirements.txt') }}
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - run: pip install -r backend/requirements.txt
+      # - run: cd backend && pytest
+
+      # Cache npm
+      - uses: actions/cache@v3
+        with:
+          path: frontend/node_modules
+          key: ${{ runner.os }}-npm-${{ hashFiles('frontend/package.json') }}
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - run: |
+          cd frontend
+          npm ci
+        #  npm run lint
+  # 2. Build & Push
+  build-and-push:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ secrets.REGISTRY_URL }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_TOKEN }}
+ 
+      - name: Build and push backend
+        uses: docker/build-push-action@v4
+        with:
+          context: ./backend
+          push: true
+          tags: |
+            ${{ secrets.REGISTRY_URL }}/captwhite/backend:${{ github.sha }}
+            ${{ secrets.REGISTRY_URL }}/captwhite/backend:latest
+
+      - name: Build and push frontend
+        uses: docker/build-push-action@v4
+        with:
+          context: ./frontend
+          push: true
+          tags: |
+            ${{ secrets.REGISTRY_URL }}/captwhite/frontend:${{ github.sha }}
+            ${{ secrets.REGISTRY_URL }}/captwhite/frontend:latest
+
+  # 3. Deploy vía SSH
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+        # Paso 1: Añadir el host a known_hosts
+      - name: Add SSH known hosts
+        env:
+          HOST: ${{ secrets.SSH_HOST }}
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan "$HOST" >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      # Paso 2: Configurar SSH agent
+      - name: Set up SSH agent
+        uses: webfactory/ssh-agent@v0.6.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+
+      # Paso 3: Instalar rsync en el ejecutor de la action
+      - name: Install rsync
+        run: sudo apt-get update && sudo apt-get install -y rsync
+
+      # Paso 4: Sincronizar los archivos del repositorio con el servidor
+      - name: Sync repository files to VPS
+        env:
+          HOST: ${{ secrets.SSH_HOST }}
+          USER: ${{ secrets.SSH_USER }}
+        run: |
+          rsync -avz --delete -e "ssh -p 22 -o StrictHostKeyChecking=no" . $USER@$HOST:/home/$USER/workspaces/temps
+          
+      # Paso 5: Desplegar    
+      - name: Deploy to VPSs
+        env:
+          HOST: ${{ secrets.SSH_HOST }}
+          USER: ${{ secrets.SSH_USER }}
+        run: |
+          ssh -o StrictHostKeyChecking=no $USER@$HOST << 'EOF'
+            cd /home/$USER/workspaces/temps
+            docker compose pull
+            docker compose -f down
+            docker compose --file docker-compose-prod.yml up -d
+          EOF
+  
+  # 4. Notificación (opcional)
+  # notify:
+  #   if: always()
+  #   needs: [test, build-and-push, deploy]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Send Slack notification
+  #       if: ${{ secrets.SLACK_WEBHOOK }}
+  #       uses: slackapi/slack-github-action@v1
+  #       with:
+  #         payload: |
+  #           {
+  #             "text": "*CI/CD Pipeline* para `${{ github.ref }}` finalizado con estado `${{ job.status }}`."
+  #           }
+  #       env:
+  #         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}

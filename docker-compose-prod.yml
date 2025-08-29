@@ -1,0 +1,37 @@
+
+services:
+  fastapi-backend:
+    container_name: "temps-backend"
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    networks:
+      - webnet
+
+
+
+  vite-react-tw-frontend:
+    container_name: "temps-frontend"
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.temps-http.entrypoints=web"
+      - "traefik.http.routers.temps-http.rule=Host(`temps.captwhite.com`)"
+      - "traefik.http.routers.temps-http.middlewares=redirect-to-https@docker"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      #
+      - "traefik.http.routers.temps.entrypoints=websecure"
+      - "traefik.http.routers.temps.rule=Host(`temps.captwhite.com`)"
+      - "traefik.http.routers.temps.tls=true"
+      - "traefik.http.routers.temps.tls.certresolver=myresolver"
+      - "traefik.http.services.temps.loadbalancer.server.port=8080"
+    networks:
+      - webnet
+
+networks:
+  webnet:
+    external: true
