@@ -4,7 +4,7 @@ services:
     container_name: "temps-backend"
     image: captwhite/temps-backend:latest
     networks:
-      - webnet
+      - webnet-temps
 
   vite-react-tw-frontend:
     container_name: "temps-frontend"
@@ -22,8 +22,8 @@ services:
       - "traefik.http.routers.temps.tls.certresolver=myresolver"
       - "traefik.http.services.temps.loadbalancer.server.port=8080"
     networks:
-      - webnet
+      - webnet-temps
 
 networks:
-  webnet:
+  webnet-temps:
     external: true
