@@ -68,8 +68,8 @@ jobs:
           context: ./backend
           push: true
           tags: |
-            ${{ secrets.REGISTRY_URL }}/captwhite/backend:${{ github.sha }}
-            ${{ secrets.REGISTRY_URL }}/captwhite/backend:latest
+            ${{ secrets.REGISTRY_URL }}/captwhite/temps-backend:${{ github.sha }}
+            ${{ secrets.REGISTRY_URL }}/captwhite/temps-backend:latest
 
       - name: Build and push frontend
         uses: docker/build-push-action@v4
@@ -77,8 +77,8 @@ jobs:
           context: ./frontend
           push: true
           tags: |
-            ${{ secrets.REGISTRY_URL }}/captwhite/frontend:${{ github.sha }}
-            ${{ secrets.REGISTRY_URL }}/captwhite/frontend:latest
+            ${{ secrets.REGISTRY_URL }}/captwhite/temps-frontend:${{ github.sha }}
+            ${{ secrets.REGISTRY_URL }}/captwhite/temps-frontend:latest
 
   # 3. Deploy vía SSH
   deploy:
@@ -103,20 +103,15 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-
-      # Paso 3: Instalar rsync en el ejecutor de la action
-      - name: Install rsync
-        run: sudo apt-get update && sudo apt-get install -y rsync
-
-      # Paso 4: Sincronizar los archivos del repositorio con el servidor
-      - name: Sync repository files to VPS
+      # Paso 3: Sincronizar solo el archivo de Docker Compose
+      - name: Sync docker-compose.yml file to VPS
         env:
           HOST: ${{ secrets.SSH_HOST }}
           USER: ${{ secrets.SSH_USER }}
         run: |
-          rsync -avz --delete -e "ssh -p 22 -o StrictHostKeyChecking=no" . $USER@$HOST:/home/$USER/workspaces/temps
-          
-      # Paso 5: Desplegar    
+          scp -o StrictHostKeyChecking=no ./docker-compose-prod.yml $USER@$HOST:/home/$USER/workspaces/temps/docker-compose-prod.yml
+
+      # Paso 4: Desplegar 
       - name: Deploy to VPSs
         env:
           HOST: ${{ secrets.SSH_HOST }}
@@ -125,9 +120,10 @@ jobs:
           ssh -o StrictHostKeyChecking=no $USER@$HOST << 'EOF'
             cd /home/$USER/workspaces/temps
             docker compose pull
-            docker compose -f down
+            docker compose down
             docker compose --file docker-compose-prod.yml up -d
           EOF
+
   
   # 4. Notificación (opcional)
   # notify:

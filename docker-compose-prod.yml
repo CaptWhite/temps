@@ -2,17 +2,13 @@
 services:
   fastapi-backend:
     container_name: "temps-backend"
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: captwhite/temps-backend:latest
     networks:
       - webnet
 
   vite-react-tw-frontend:
     container_name: "temps-frontend"
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    image: captwhite/temps-frontend:latest
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.temps-http.entrypoints=web"
