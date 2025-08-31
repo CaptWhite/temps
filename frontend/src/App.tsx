@@ -4,6 +4,7 @@ import { ShowResults } from "./components/ShowResults";
 import { Header } from "./components/Header";
 import { useStore } from "./store/useStore";
 
+
 function App() {
   const { 
     modifiedImage, 
@@ -52,12 +53,7 @@ function App() {
           onNewcsvPlate={onNewcsvPlate}
           onNewType={onNewType}
         />
-        <ShowResults
-          type={type}
-          modifiedImage={modifiedImage}
-          csvData={csvData}
-          csvPlate={csvPlate}
-        />
+        <ShowResults />
       </Box>
     </>
   );

@@ -2,6 +2,8 @@ import { Box, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Theme
 import { ShowImage } from './ShowImage';
 import { ShowIcon } from './ShowIcon';
 import { ShowTable } from './ShowTable';
+
+
 import { useStore } from '../store/useStore';
 // Tema personalizado
 const theme = createTheme({  
@@ -16,12 +18,21 @@ const theme = createTheme({
   },
 });
 
-export const ShowResults = () => {  const {    
-  type, modifiedImage, csvData, csvPlate, radio1, radio2, setRadio1, setRadio2 } = useStore();  const handleRadio1Change = (e: React.ChangeEvent<HTMLInputElement>) => {
+export const ShowResults = () => {
+  const {
+    type,
+    modifiedImage,
+    csvData,
+    csvPlate,
+    radio1,
+    radio2,
+    setRadio1,
+    setRadio2
+  } = useStore();
+  const handleRadio1Change = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;    
     setRadio1(value);  
   }  
-  
   const handleRadio2Change = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;    
     setRadio2(value);      
