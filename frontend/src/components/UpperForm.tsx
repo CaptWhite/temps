@@ -2,6 +2,15 @@ import React from "react";
 import { Box,  Button, MenuItem, Select, TextField, FormControl, Divider, CircularProgress } from "@mui/material";
 import { useStore } from "../store/useStore";
 
+interface UpperFormProps {
+  onNewImageModified: (newImageModified: string | null) => void;
+  onNewcsvData: (newcsvData: any[]) => void;
+  onNewcsvPlate: (newcsvPlate: any[]) => void;
+  onNewType: (type: string) => void;
+}
+
+
+
 export const UpperForm = () => {
   const {
     imageFile,
@@ -12,7 +21,8 @@ export const UpperForm = () => {
     setDate,
     setOutputType,
     fetchData,
-    setType
+    setType,
+    // You can also get the setters for onNew... here directly if needed
   } = useStore();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
