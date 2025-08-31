@@ -1,15 +1,8 @@
 import React from "react";
-import { Box,  Button, MenuItem, Select, TextField, FormControl, Divider, CircularProgress } from "@mui/material";
+import { Box, Button, MenuItem, Select, TextField, FormControl, Divider, CircularProgress, SelectChangeEvent } from "@mui/material";
 import { useStore } from "../store/useStore";
 
-interface UpperFormProps {
-  onNewImageModified: (newImageModified: string | null) => void;
-  onNewcsvData: (newcsvData: any[]) => void;
-  onNewcsvPlate: (newcsvPlate: any[]) => void;
-  onNewType: (type: string) => void;
-}
-
-
+// Se elimina la interfaz UpperFormProps ya que el componente no recibirá props.
 
 export const UpperForm = () => {
   const {
@@ -22,7 +15,6 @@ export const UpperForm = () => {
     setOutputType,
     fetchData,
     setType,
-    // You can also get the setters for onNew... here directly if needed
   } = useStore();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,7 +30,7 @@ export const UpperForm = () => {
     setDate(e.target.value);
   };
 
-  const handleSelectChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSelectChange = (e: SelectChangeEvent<string>) => {
     const value = e.target.value;
     setOutputType(value);
     setType(value);
@@ -53,45 +45,47 @@ export const UpperForm = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <Box display="flex"  flexWrap="wrap" justifyContent="center" alignItems="center" gap={2} >
+      <Box display="flex" flexWrap="wrap" justifyContent="center" alignItems="center" gap={2}>
 
         {/* Campo de selección de archivo */}
-        <Box flex="1 1 auto" maxWidth={{ xs: "100%", sm: "60%" }}  padding={1} >
-          <TextField type="file" onChange={handleFileChange}  accept=".jpg,.png,.fits,.zip"  />
+        <Box flex="1 1 auto" maxWidth={{ xs: "100%", sm: "60%" }} padding={1}>
+          <Button component="label" variant="contained" color="primary">
+            {imageFile ? imageFile.name : 'SELECCIONAR ARCHIVO'}
+            <input type="file" onChange={handleFileChange} accept=".jpg,.png,.fits,.zip" style={{ display: 'none' }} />
+          </Button>
         </Box>
 
         {/* Selector de fecha */}
-        <Box flex="1 1 auto" maxWidth={{ xs: "100%", sm: "20%" }}  padding={1} >
+        <Box flex="1 1 auto" maxWidth={{ xs: "100%", sm: "20%" }} padding={1}>
           <TextField type="date" value={date} onChange={handleDateChange} fullWidth />
         </Box>
 
         {/* Selector de tipo de salida */}
-        <Box  flex="1 1 auto"  maxWidth={{ xs: "100%", sm: "20%" }}  padding={1} >
-          <FormControl fullWidth> 
-            <Select labelId="output-type-label" value={outputType} onChange={handleSelectChange} >
+        <Box flex="1 1 auto" maxWidth={{ xs: "100%", sm: "20%" }} padding={1}>
+          <FormControl fullWidth>
+            <Select labelId="output-type-label" value={outputType} onChange={handleSelectChange as any}>
               <MenuItem value="image">Imatge</MenuItem>
               <MenuItem value="table">Taula</MenuItem>
             </Select>
           </FormControl>
         </Box>
       </Box>
-   
-        {/* Botón de envío */}
-        <Box sx={{ margin: "20px" }}>
-          <Button type="submit" variant="contained" color="primary" disabled={loading}>
-            {loading ? 'Carregant ...' : 'PROCESSAR'}
-          </Button>
-        </Box>
 
-
-    <Divider></Divider>  
-
-    {/* Spinner */}
-    {loading && (   
-      <Box sx={{ display: 'flex', justifyContent: "center", alignItems: "center"}}>
-        <CircularProgress/>
+      {/* Botón de envío */}
+      <Box sx={{ margin: "20px" }}>
+        <Button type="submit" variant="contained" color="primary" disabled={loading}>
+          {loading ? 'Carregant ...' : 'PROCESSAR'}
+        </Button>
       </Box>
-    )}
-  </form>
+
+      <Divider></Divider>
+
+      {/* Spinner */}
+      {loading && (
+        <Box sx={{ display: 'flex', justifyContent: "center", alignItems: "center" }}>
+          <CircularProgress />
+        </Box>
+      )}
+    </form>
   )
 }
