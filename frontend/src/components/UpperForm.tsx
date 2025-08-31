@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Button, MenuItem, Select, TextField, FormControl, Divider, CircularProgress, SelectChangeEvent } from "@mui/material";
+import { Box, Button, MenuItem, Select, TextField, FormControl, Divider, CircularProgress, type SelectChangeEvent } from "@mui/material";
 import { useStore } from "../store/useStore";
 
 // Se elimina la interfaz UpperFormProps ya que el componente no recibirá props.
