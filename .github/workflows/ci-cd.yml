@@ -116,6 +116,8 @@ jobs:
         env:
           HOST: ${{ secrets.SSH_HOST }}
           USER: ${{ secrets.SSH_USER }}
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+
         run: |
           ssh -o StrictHostKeyChecking=no $USER@$HOST << 'EOF'
             cd /home/$USER/workspaces/temps
