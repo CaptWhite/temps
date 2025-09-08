@@ -29,7 +29,7 @@ export const getResources = async (
       formData.append("date", date);
       console.log( import.meta )
       // const response = await axios.post<GetResourcesResponse>(`${ import.meta.env.VITE_API_URL }/upload/`, formData, {
-      const response = await axios.post<GetResourcesResponse>(`http://localhost:8000/upload/`, formData, {  
+      const response = await axios.post<GetResourcesResponse>(`http://localhost:8001/upload/`, formData, {  
         headers: {
           'Content-Type': 'multipart/form-data'
         },
