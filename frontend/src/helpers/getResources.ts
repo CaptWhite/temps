@@ -27,7 +27,9 @@ export const getResources = async (
       formData.append("filename", imageFile.name);
       formData.append("msg", "hello");
       formData.append("date", date);
-      const response = await axios.post<GetResourcesResponse>(`${ import.meta.env.VITE_API_URL }/upload/`, formData, {
+      console.log( import.meta )
+      // const response = await axios.post<GetResourcesResponse>(`${ import.meta.env.VITE_API_URL }/upload/`, formData, {
+      const response = await axios.post<GetResourcesResponse>(`http://localhost:8000/upload/`, formData, {  
         headers: {
           'Content-Type': 'multipart/form-data'
         },
