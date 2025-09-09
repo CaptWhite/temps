@@ -27,7 +27,7 @@ export const getResources = async (
       formData.append("filename", imageFile.name);
       formData.append("msg", "hello");
       formData.append("date", date);
-      console.log( import.meta )
+      console.log( 'import.meta' )
       // const response = await axios.post<GetResourcesResponse>(`${ import.meta.env.VITE_API_URL }/upload/`, formData, {
       const response = await axios.post<GetResourcesResponse>(`/api/upload/`, formData, {  
         headers: {
@@ -35,7 +35,7 @@ export const getResources = async (
         },
         responseType: 'json' 
       });
-
+      console.log( response )
       // Leer la imagen modificada desde la respuesta
       const imgBase64 = response.data.imagen;
       const decodedImg = Base64.toUint8Array(imgBase64);
