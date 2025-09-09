@@ -5,6 +5,7 @@ RUN npm install
 RUN npm list
 COPY . .
 ENV NODE_ENV=production
+ENV VITE_API_URL=/api
 RUN npm run build
 
 FROM nginx:alpine
