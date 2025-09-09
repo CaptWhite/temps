@@ -78,7 +78,14 @@ def check_job_status(jobid):
     return result['status']
 
 def download_corr(jobid): # , filename):
-    headers = { 'Content-Type': 'application/json' }
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Connection': 'keep-alive',
+        'Referer': 'https://nova.astrometry.net/' # A menudo es una cabecera clave
+    }
     params = { "apikey": API_KEY }
     cwd = os.getcwd()
     # outfile = cwd + filename[1:]

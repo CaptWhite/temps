@@ -2,6 +2,7 @@ import { UpperForm } from "./components/UpperForm";
 import { Box } from "@mui/material";
 //import { ShowResults } from "./components/ShowResults";
 import { Header } from "./components/Header";
+import { ShowResults } from "./components/ShowResults";
 //import { useStore } from "./store/useStore";
 
 
@@ -21,6 +22,7 @@ function App() {
         }}
       >
         <UpperForm />
+        <ShowResults />
       </Box>
     </>
   );

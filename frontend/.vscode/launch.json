@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Vite React App",
+      "type": "edge",
+      "request": "launch",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}/src",
+      "sourceMaps": true,
+      "trace": true,
+      "runtimeArgs": [
+        "--remote-debugging-port=9222"
+      ]
+    }
+  ]
+}

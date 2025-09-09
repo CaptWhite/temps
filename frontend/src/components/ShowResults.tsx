@@ -2,8 +2,6 @@ import { Box, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Theme
 import { ShowImage } from './ShowImage';
 import { ShowIcon } from './ShowIcon';
 import { ShowTable } from './ShowTable';
-
-
 import { useStore } from '../store/useStore';
 // Tema personalizado
 const theme = createTheme({  

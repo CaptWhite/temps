@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, Button, MenuItem, Select, TextField, FormControl, Divider, CircularProgress, type SelectChangeEvent } from "@mui/material";
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { useStore } from "../store/useStore";
 
 // Se elimina la interfaz UpperFormProps ya que el componente no recibirá props.
@@ -49,9 +50,21 @@ export const UpperForm = () => {
 
         {/* Campo de selección de archivo */}
         <Box flex="1 1 auto" maxWidth={{ xs: "100%", sm: "60%" }} padding={1}>
-          <Button component="label" variant="contained" color="primary">
-            {imageFile ? imageFile.name : 'SELECCIONAR ARCHIVO'}
-            <input type="file" onChange={handleFileChange} accept=".jpg,.png,.fits,.zip" style={{ display: 'none' }} />
+          <Button
+            variant="contained"
+            component="label" // Hace que el Button funcione como una etiqueta
+            startIcon={<CloudUploadIcon />}
+          >
+            {imageFile ? imageFile.name : 'SELECCIONAR ARXIU'}
+            {/* El input oculto, con un ID para que la etiqueta lo vincule */}
+            <input
+              id="file-upload" // Aquí está el ID
+              type="file"
+              onChange={handleFileChange}
+              accept=".jpg,.png,.fits,.zip"
+              style={{ display: 'none' }}
+              placeholder="Selecciona un arxiu"
+            />
           </Button>
         </Box>
 
