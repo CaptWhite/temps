@@ -7,46 +7,46 @@ on:
   workflow_dispatch:
 
 jobs:
-  # # 1. Tests
-  # test:
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       node-version: [18.x]
-  #       python-version: ['3.10']
-  #   steps:
-  #     - uses: actions/checkout@v3
+  # 1. Tests
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x]
+        python-version: ['3.10']
+    steps:
+      - uses: actions/checkout@v3
 
-  #     # Cache pip
-  #     - uses: actions/cache@v3
-  #       with:
-  #         path: ~/.cache/pip
-  #         key: ${{ runner.os }}-pip-${{ hashFiles('backend/requirements.txt') }}
+      # Cache pip
+      - uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('backend/requirements.txt') }}
 
-  #     - uses: actions/setup-python@v4
-  #       with:
-  #         python-version: ${{ matrix.python-version }}
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
 
-  #     - run: pip install -r backend/requirements.txt
-  #     # - run: cd backend && pytest
+      - run: pip install -r backend/requirements.txt
+      # - run: cd backend && pytest
 
-  #     # Cache npm
-  #     - uses: actions/cache@v3
-  #       with:
-  #         path: frontend/node_modules
-  #         key: ${{ runner.os }}-npm-${{ hashFiles('frontend/package.json') }}
+      # Cache npm
+      - uses: actions/cache@v3
+        with:
+          path: frontend/node_modules
+          key: ${{ runner.os }}-npm-${{ hashFiles('frontend/package.json') }}
 
-  #     - uses: actions/setup-node@v3
-  #       with:
-  #         node-version: ${{ matrix.node-version }}
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
 
-  #     - run: |
-  #         cd frontend
-  #         npm ci
-  #       #  npm run lint
+      - run: |
+          cd frontend
+          npm ci
+        #  npm run lint
   # 2. Build & Push
   build-and-push:
-  #  needs: test
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
