@@ -49,15 +49,6 @@ jobs:
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_TOKEN }}
  
-      - name: Build and push backend
-        uses: docker/build-push-action@v4
-        with:
-          context: ./backend
-          push: true
-          tags: |
-            ${{ secrets.REGISTRY_URL }}/captwhite/temps-backend:${{ github.sha }}
-            ${{ secrets.REGISTRY_URL }}/captwhite/temps-backend:latest
-
       - name: Build and push frontend
         uses: docker/build-push-action@v4
         with:
