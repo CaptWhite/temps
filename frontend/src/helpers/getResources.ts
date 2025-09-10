@@ -43,12 +43,20 @@ export const getResources = async (
       const blob = new Blob([decodedImg], { type: 'image/jpeg' });
 
       const csvString = response.data.csv
-      const csvRows = csvString.split('\n');
-      const parsedData: string[][] = csvRows.map((row: string) => row.split(','));
+      let csvRows = csvString.split('\n');
+      csvRows = csvRows.map((row: string) => row.trimEnd());
+    //const parsedData: string[][] = csvRows.map((row: string) => row.split(','));
+      const parsedData = csvRows.map(row => {
+        // Expresión regular mejorada para manejar comillas escapadas
+        const regex = /("((?:[^"]|"")*)"|[^,]+)/g;
+        const matches = [...row.matchAll(regex)].map(match => match[1]);
+        return matches;
+     });
+     
 
       const plateString = response.data.plate
       const plateRows = plateString.split('\n');
-      const parsedPlate = plateRows.map((row: string) => row.split(','));
+      const parsedPlate = plateRows.map((row: string) => row.trimEnd().split(','));
 
 
       return [blob, parsedData, parsedPlate]

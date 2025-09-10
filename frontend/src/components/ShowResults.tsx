@@ -35,7 +35,8 @@ export const ShowResults = () => {
     const value = e.target.value;    
     setRadio2(value);      
   }    
-  
+  console.log({csvData})
+
   return (
     <>       
       <ShowImage type={type} modifiedImage={modifiedImage} />      
