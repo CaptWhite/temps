@@ -17,19 +17,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      # Cache pip
-      - uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('backend/requirements.txt') }}
-
-      - uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - run: pip install -r backend/requirements.txt
-      # - run: cd backend && pytest
-
       # Cache npm
       - uses: actions/cache@v3
         with:
