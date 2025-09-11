@@ -37,9 +37,7 @@ function App() {
 
     const fetchInitialData = async () => {
       try {
-        //const response = await fetch('http://localhost:8000/scaleTime/', {
-        const response = await axios.post<GetResourcesResponse>(`/api/scaleTime/`, formData, {
-        // const response = await fetch('http://captwhite.com:8000/scaleTime/', {
+       const response = await fetch(`${ import.meta.env.VITE_API_URL }/scaleTime/`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
